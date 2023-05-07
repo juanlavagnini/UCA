@@ -8,7 +8,7 @@ servidor = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 servidor.setblocking(0)
 
 # Hago Bind del socket al puerto
-dir_servidor = ('localhost', 10013)
+dir_servidor = ('localhost', 10016)
 print('iniciando en {} port {}'.format(*dir_servidor),
       file=sys.stderr)
 servidor.bind(dir_servidor)
@@ -106,4 +106,14 @@ while entradas:
         # Remuevo cola de mensajes
         del cola_mensajes[s]
 
+    print("quiere cerrar todo?")
+    if input("S|N: ") == "S":
+        print("eliminar")
+        # Cerrar los sockets y las conexiones
+        for s in entradas:
+            s.close()
+        for s in salidas:
+            s.close()
+        servidor.close()
+        sys.exit(0)
 

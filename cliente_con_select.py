@@ -6,7 +6,7 @@ mensajes = [
     'es enviado ',
     'en partes.',
 ]
-dir_servidor = ('localhost', 10011)
+dir_servidor = ('localhost', 10016)
 
 # Creo socket
 socks = [
@@ -24,18 +24,13 @@ for mensaje in mensajes:
 
     # envío mensajes en ambos sockets
     for s in socks:
-        print('{}: enviando {!r}'.format(s.getsockname(),
-                                        datos_salientes),
-              file=sys.stderr)
+        print('{}: enviando {!r}'.format(s.getsockname(),datos_salientes),file=sys.stderr)
         s.send(datos_salientes)
 
     # leo respuestas en ambos sockets
     for s in socks:
         data = s.recv(1024)
-        print('{}: recibido {!r}'.format(s.getsockname(),
-                                         data),
-              file=sys.stderr)
+        print('{}: recibido {!r}'.format(s.getsockname(),data),file=sys.stderr)
         if not data:
-            print('cerrando socket', s.getsockname(),
-                  file=sys.stderr)
+            print('cerrando socket', s.getsockname(),file=sys.stderr)
             s.close()

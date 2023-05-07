@@ -16,7 +16,7 @@ while contador<1:
     print(datos.decode('utf-8'))
     mensaje = 'Hola Soy el Cliente 1'
     print("Enviando: ", mensaje)
-    time.sleep(5)
+    time.sleep(5) #solo para ver un tiempo en el contador
     my_socket.sendall(mensaje.encode())
 
     bytes_recibidos = 0

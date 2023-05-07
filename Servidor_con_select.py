@@ -8,7 +8,7 @@ servidor = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 servidor.setblocking(0)
 
 # Hago Bind del socket al puerto
-dir_servidor = ('localhost', 10000)
+dir_servidor = ('localhost', 10013)
 print('iniciando en {} port {}'.format(*dir_servidor),
       file=sys.stderr)
 servidor.bind(dir_servidor)
@@ -25,8 +25,12 @@ salidas = []
 # Cola de mensajes salientes
 cola_mensajes = {}
 
-while entradas:
+#manejo de cierres por el usuarioo
 
+
+# Registrar la función de manejo de señales de interrupción
+
+while entradas:
     # Espero a que al menos uno de los sockets este listo para ser procesado
 
     print('esperando el próximo evento', file=sys.stderr)
@@ -101,3 +105,5 @@ while entradas:
 
         # Remuevo cola de mensajes
         del cola_mensajes[s]
+
+

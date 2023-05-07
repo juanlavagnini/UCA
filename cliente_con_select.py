@@ -14,7 +14,7 @@ socks = [
     socket.socket(socket.AF_INET, socket.SOCK_STREAM),
 ]
 
-# onectar el socket al puerto en el cual el servidor está escuchando
+#conectar el socket al puerto en el cual el servidor está escuchando
 print('conectando a {} puerto {}'.format(*dir_servidor),
       file=sys.stderr)
 for s in socks:
@@ -24,13 +24,17 @@ for mensaje in mensajes:
 
     # envío mensajes en ambos sockets
     for s in socks:
-        print('{}: enviando {!r}'.format(s.getsockname(),datos_salientes),file=sys.stderr)
-        s.send(datos_salientes)
+        try:
+            print('{}: enviando {!r}'.format(s.getsockname(), datos_salientes), file=sys.stderr)
+            s.send(datos_salientes)
+        except:
+            print("este socket esta cerrado")
 
     # leo respuestas en ambos sockets
     for s in socks:
-        data = s.recv(1024)
-        print('{}: recibido {!r}'.format(s.getsockname(),data),file=sys.stderr)
-        if not data:
-            print('cerrando socket', s.getsockname(),file=sys.stderr)
-            s.close()
+            try:
+                data = s.recv(1024)
+                print('{}: recibido {!r}'.format(s.getsockname(),data),file=sys.stderr)
+            except:
+                print('cerrando socket', s.getsockname(),file=sys.stderr)
+                s.close()

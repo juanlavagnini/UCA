@@ -2,6 +2,7 @@ import select
 import socket
 import sys
 import queue
+import datetime
 
 # Creando un socket TCP/IP
 servidor = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -24,6 +25,7 @@ salidas = []
 
 # Cola de mensajes salientes
 cola_mensajes = {}
+timers_de_conexion ={}
 
 #manejo de cierres por el usuarioo
 
@@ -53,21 +55,25 @@ while entradas:
             con.setblocking(0)
             entradas.append(con)
 
+            timers_de_conexion[con] = datetime.datetime.now()
+            mensajeHoy = "Conexion del cliente a las " + timers_de_conexion[con].strftime("%Y-%m-%d  %H:%M:%S")
+            con.send(mensajeHoy.encode('UTF-8'))
             # Le asigno a la conexión una cola en la cuál quiero enviar
             cola_mensajes[con] = queue.Queue()
 
         else:
-            data = s.recv(1024)
-            if data:
-                # Un socket leíble tiene datos
-                print('  recibido {!r} desde {}'.format(
-                    data, s.getpeername()), file=sys.stderr,
-                )
-                cola_mensajes[s].put(data)
-                # Agrego un canal de salida para la respuesta
-                if s not in salidas:
-                    salidas.append(s)
-            else:
+            try:
+                data = s.recv(1024)
+                if data:
+                    # Un socket leíble tiene datos
+                    print('  recibido {!r} desde {}'.format(
+                        data, s.getpeername()), file=sys.stderr,
+                    )
+                    cola_mensajes[s].put(data)
+                    # Agrego un canal de salida para la respuesta
+                    if s not in salidas:
+                        salidas.append(s)
+            except:
                 # Si está vacío lo interpreto como una conexión a cerrar
                 print('  cerrando...', dir_cliente,
                       file=sys.stderr)
@@ -89,6 +95,8 @@ while entradas:
             print('  ', s.getpeername(), 'cola vacía',
                   file=sys.stderr)
             salidas.remove(s)
+        except:
+            print("socket cerrado ya")
         else:
             print(' enviando {!r} a {}'.format(next_msg, s.getpeername()), file=sys.stderr)
             s.send(next_msg)
@@ -110,6 +118,13 @@ while entradas:
     if input("S|N: ") == "S":
         print("eliminar")
         # Cerrar los sockets y las conexiones
+        for con in timers_de_conexion:
+            print(timers_de_conexion[con])
+            fin = datetime.datetime.now()
+            duracion = fin - timers_de_conexion[con]
+            segundos = duracion.total_seconds()
+            mensajeFin = "La conexion duro: " + str(segundos) + " segundos."
+            print(mensajeFin)
         for s in entradas:
             s.close()
         for s in salidas:

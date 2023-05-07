@@ -1,4 +1,5 @@
 import socket
+import time
 
 #Creo el socket
 my_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -15,6 +16,7 @@ while contador<1:
     print(datos.decode('utf-8'))
     mensaje = 'Hola Soy el Cliente 1'
     print("Enviando: ", mensaje)
+    time.sleep(5)
     my_socket.sendall(mensaje.encode())
 
     bytes_recibidos = 0
